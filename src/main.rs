@@ -62,7 +62,7 @@ fn main() {
         println!("Initialized git directory")
     } else if args[1] == "cat-file" {
         cat_file_handler(&args);
-    } else if args[2] == "hash-object" {
+    } else if args[1] == "hash-object" {
         hash_object_handler(&args);
     } else {
         println!("unknown command: {}", args[1]);
