@@ -56,5 +56,7 @@ pub fn write_tree(path: &str) -> String {
         tree_content.push_str(&format!("{} {}\0{}", mode, name, sha1_hash_str));
     }
 
+    println!("{}", tree_content);
+
     write(tree_content.as_bytes(), "tree")
 }
