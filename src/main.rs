@@ -1,5 +1,6 @@
 mod retrieve;
 pub mod parse;
+pub mod write;
 use crate::retrieve::get_object_content;
 
 use std::fs;
@@ -28,20 +29,9 @@ fn hash_object_handler(args: &Vec<String>) {
     let mut content: Vec<u8> = Vec::new();
     file.read_to_end(&mut content).expect("Unable to read file");
 
-    let blob_content: String = format!("blob {}\0", content.len());
-    let mut hasher = Sha1::new();
-    hasher.update(blob_content.as_bytes());
-    hasher.update(&content);
-    let sha1_hash = hasher.finalize();
-    let sha1_hash_str: String = format!("{:x}", sha1_hash);
+    let hash = write::write_blob(&content);
 
-    let blob_path = format!(".git/objects/{}/{}", &sha1_hash_str[0..2], &sha1_hash_str[2..]);
-    fs::create_dir_all(Path::new(&blob_path).parent().unwrap()).expect("Unable to create directory");
-    let mut encoder: ZlibEncoder<File> = ZlibEncoder::new(File::create(blob_path).expect("Unable to create file"), Compression::default());
-    encoder.write_all(blob_content.as_bytes()).expect("Unable to write to file");
-    encoder.write_all(&content).expect("Unable to write to file");
-
-    println!("{}", sha1_hash_str);
+    println!("{}", hash);
 }
 
 fn ls_tree_handler(args: &Vec<String>) {
