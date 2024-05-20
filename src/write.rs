@@ -6,22 +6,26 @@ use flate2::write::ZlibEncoder;
 use flate2::Compression;
 use std::io::Write;
 
-
-pub fn write_blob(content: &[u8]) -> String {
-    let blob_content: String = format!("blob {}\0", content.len());
-    let mut hasher: sha1::digest::core_api::CoreWrapper<sha1::Sha1Core> = Sha1::new();
-    hasher.update(blob_content.as_bytes());
-    hasher.update(&content);
+fn write(content: &[u8], g_type: &str) -> String {
+    let mut hasher = Sha1::new();
+    hasher.update(format!("{} {}\0", g_type, content.len()).as_bytes());
+    hasher.update(content);
     let sha1_hash = hasher.finalize();
-    let sha1_hash_str: String = format!("{:x}", sha1_hash);
+    let sha1_hash_str = format!("{:x}", sha1_hash);
 
     let blob_path = format!(".git/objects/{}/{}", &sha1_hash_str[0..2], &sha1_hash_str[2..]);
     fs::create_dir_all(Path::new(&blob_path).parent().unwrap()).expect("Unable to create directory");
-    let mut encoder: ZlibEncoder<File> = ZlibEncoder::new(File::create(blob_path).expect("Unable to create file"), Compression::default());
-    encoder.write_all(blob_content.as_bytes()).expect("Unable to write to file");
-    encoder.write_all(&content).expect("Unable to write to file");
+    let mut encoder = ZlibEncoder::new(File::create(blob_path).expect("Unable to create file"), Compression::default());
+    encoder.write_all(format!("{} {}\0", g_type, content.len()).as_bytes()).expect("Unable to write to file");
+    encoder.write_all(content).expect("Unable to write to file");
 
     sha1_hash_str
+
+}
+
+pub fn write_blob(content: &[u8]) -> String {
+    let blob_content: String = format!("blob {}\0", content.len());
+    write(content, &blob_content)
 }
 
 use std::fs::read_dir;
@@ -52,5 +56,5 @@ pub fn write_tree(path: &str) -> String {
         tree_content.push_str(&format!("{} {}\0{}", mode, name, sha1_hash_str));
     }
 
-    write_blob(tree_content.as_bytes())
+    write(tree_content.as_bytes(), "tree")
 }
