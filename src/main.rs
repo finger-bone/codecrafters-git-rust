@@ -43,8 +43,9 @@ fn ls_tree_handler(args: &Vec<String>) {
     }
 }
 
-pub fn write_tree_handler(args: &Vec<String>) {
-    let path = &args[3];
+pub fn write_tree_handler(_: &Vec<String>) {
+    let binding = std::fs::canonicalize(".").expect("Unable to get current directory");
+    let path = binding.to_str().expect("Unable to convert PathBuf to str");
 
     let tree_hash = write::write_tree(path);
 
