@@ -1,7 +1,8 @@
-mod retrieve;
+pub mod retrieve;
 pub mod parse;
 pub mod write;
 pub mod commit;
+pub mod clone;
 
 use crate::retrieve::get_object_content;
 
@@ -9,6 +10,7 @@ use std::fs;
 use std::env;
 use std::fs::File;
 use std::io::Read;
+use std::path::Path;
 
 fn cat_file_handler(args: &Vec<String>) {
     let blob_hash = &args[3];
@@ -64,6 +66,13 @@ pub fn commit_tree_handler(args: &Vec<String>) {
     println!("{}", commit.0);
 }
 
+pub fn clone_handler(args: &Vec<String>) {
+    let repo_url = reqwest::Url::parse(&args[2]).expect("Invalid URL");
+    let output_path = Path::new(&args[3]);
+
+    clone::clone(&repo_url, Some(output_path));
+}
+
 fn main() {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     // eprintln!("Logs from your program will appear here!");
@@ -86,6 +95,8 @@ fn main() {
         write_tree_handler(&args);
     } else if args[1] == "commit-tree" {
         commit_tree_handler(&args);
+    } else if args[1] == "clone" {
+        clone_handler(&args);
     } else {
         println!("unknown command: {}", args[1]);
     }
