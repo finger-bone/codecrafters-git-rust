@@ -7,11 +7,6 @@ use std::fs;
 use std::env;
 use std::fs::File;
 use std::io::Read;
-use std::path::Path;
-use sha1::{Sha1, Digest};
-use flate2::write::ZlibEncoder;
-use flate2::Compression;
-use std::io::Write;
 
 fn cat_file_handler(args: &Vec<String>) {
     let blob_hash = &args[3];
@@ -46,6 +41,14 @@ fn ls_tree_handler(args: &Vec<String>) {
     for entry in entries {
         println!("{}", entry.name);
     }
+}
+
+pub fn write_tree_handler(args: &Vec<String>) {
+    let path = &args[3];
+
+    let tree_hash = write::write_tree(path);
+
+    println!("{}", tree_hash);
 }
 
 fn main() {
