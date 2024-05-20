@@ -18,8 +18,6 @@ pub fn parse_tree(content: &Vec<u8>) -> Vec<TreeEntry> {
         let hash_end = next_null + 1 + DIGEST_LEN;
         let hash = content[next_null + 1..hash_end].to_vec();
         
-        eprintln!("mode: {}, name: {}, hash: {:?}", mode, name, hash);
-        
         entries.push(TreeEntry { mode, name, hash });
         
         cur = next_null + 1 + DIGEST_LEN;
