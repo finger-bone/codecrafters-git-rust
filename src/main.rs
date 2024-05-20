@@ -69,6 +69,8 @@ fn main() {
         hash_object_handler(&args);
     } else if args[1] == "ls-tree" {
         ls_tree_handler(&args);
+    } else if args[1] == "write-tree" {
+        write_tree_handler(&args);
     } else {
         println!("unknown command: {}", args[1]);
     }

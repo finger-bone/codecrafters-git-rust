@@ -1,7 +1,5 @@
 use std::fs;
-use std::env;
 use std::fs::File;
-use std::io::Read;
 use std::path::Path;
 use sha1::{Sha1, Digest};
 use flate2::write::ZlibEncoder;
