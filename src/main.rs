@@ -24,9 +24,9 @@ fn hash_object_handler(args: &Vec<String>) {
     let mut content: Vec<u8> = Vec::new();
     file.read_to_end(&mut content).expect("Unable to read file");
 
-    let hash = write::write_blob(&content);
+    let blob_hash = write::write_blob(&content);
 
-    println!("{}", hash);
+    println!("{}", blob_hash.0);
 }
 
 fn ls_tree_handler(args: &Vec<String>) {
@@ -49,7 +49,7 @@ pub fn write_tree_handler(_: &Vec<String>) {
 
     let tree_hash = write::write_tree(path);
 
-    println!("{}", tree_hash);
+    println!("{}", tree_hash.0);
 }
 
 fn main() {
