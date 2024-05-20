@@ -1,6 +1,8 @@
 mod retrieve;
 pub mod parse;
 pub mod write;
+pub mod commit;
+
 use crate::retrieve::get_object_content;
 
 use std::fs;
@@ -52,6 +54,16 @@ pub fn write_tree_handler(_: &Vec<String>) {
     println!("{}", tree_hash.0);
 }
 
+pub fn commit_tree_handler(args: &Vec<String>) {
+    let tree_hash = &args[2];
+    let commit_hash = &args[4];
+    let message = &args[6];
+
+    let commit = commit::commit_tree(tree_hash, commit_hash, message);
+
+    println!("{}", commit.0);
+}
+
 fn main() {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     // eprintln!("Logs from your program will appear here!");
@@ -72,6 +84,8 @@ fn main() {
         ls_tree_handler(&args);
     } else if args[1] == "write-tree" {
         write_tree_handler(&args);
+    } else if args[1] == "commit-tree" {
+        commit_tree_handler(&args);
     } else {
         println!("unknown command: {}", args[1]);
     }

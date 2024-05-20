@@ -7,7 +7,7 @@ use flate2::Compression;
 use std::io::Write;
 use std::fs::read_dir;
 
-fn write(content: &[u8], g_type: &str) -> (String, Vec<u8>) {
+pub fn write(content: &[u8], g_type: &str) -> (String, Vec<u8>) {
     let mut hasher = Sha1::new();
     hasher.update(format!("{} {}\0", g_type, content.len()).as_bytes());
     hasher.update(content);
